@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Registration Form</title>
+    <link rel="stylesheet" href="css\style.css" />
+  </head>
+  <body>
+    <div class="form-container">
+      <h1>Registration Form</h1>
+
+      <form id="userForm">
+        <div class="form-group">
+          <label for="name"
+            >Full Name <span class="optional">(Required)</span></label
+          >
+          <input type="text" id="name" name="name" required />
+        </div>
+
+        <div class="form-group">
+          <label for="phone"
+            >Phone Number
+            <span class="optional">(Required - 10 digits)</span></label
+          >
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            maxlength="10"
+            pattern="[0-9]{10}"
+            required
+          />
+          <button type="button" class="verify-btn" id="sendOtp" disabled>
+            Send OTP
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label for="otp">Enter OTP</label>
+          <div class="otp-section">
+            <input
+              type="text"
+              id="otp"
+              name="otp"
+              class="otp-input"
+              maxlength="6"
+              placeholder="Enter 6-digit OTP"
+            />
+            <button type="button" class="verify-btn" id="verifyOtp">
+              Verify OTP
+            </button>
+          </div>
+        </div>
+
+        <!-- MOVED: Photo/Video upload goes here, just after OTP -->
+        <div class="form-group">
+          <label for="media"
+            >Photo/Video Upload
+            <span class="optional">(JPG, PNG - Max 5MB)</span></label
+          >
+          <div class="file-upload">
+            <input
+              type="file"
+              id="media"
+              name="media"
+              accept="image/jpeg,image/png,video/*"
+              onchange="updateFileName(this)"
+            />
+            <label for="media" class="file-upload-label"
+              >Choose Photo or Video</label
+            >
+          </div>
+          <div id="fileName" class="file-name"></div>
+        </div>
+        <!-- END MOVED BLOCK -->
+
+        <div class="form-group">
+          <label for="location">Location in Mangalore</label>
+          <select
+            id="location"
+            name="location"
+            class="mangalore-locations"
+            required
+          >
+            <option value="">Select Location</option>
+            <option value="mangalore-city">Mangalore City Center</option>
+            <option value="kadri">Kadri</option>
+            <option value="bhatkal">Bhatkal</option>
+            <option value="bendoor">Bendoorwell</option>
+            <option value="kankanady">Kankanady</option>
+            <option value="bejai">Bejai</option>
+            <option value="nanthoor">Nanthoor</option>
+            <option value="attavar">Attavar</option>
+            <option value="jalianagar">Jalianagar</option>
+            <option value="kodailbail">Kodailbail</option>
+            <option value="moodbidri">Moodbidri</option>
+            <option value="karkala">Karkala</option>
+            <option value="udupi">Udupi (Nearby)</option>
+          </select>
+        </div>
+
+        <div class="date-time-group">
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" name="date" required />
+          </div>
+          <div class="form-group">
+            <label for="time">Time</label>
+            <input type="time" id="time" name="time" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="year">Year</label>
+          <select id="year" name="year" required>
+            <option value="">Select Year</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+            <option value="2027">2027</option>
+            <option value="2028">2028</option>
+            <option value="2029">2029</option>
+            <option value="2030">2030</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="comments">Comments</label>
+          <textarea
+            id="comments"
+            name="comments"
+            placeholder="Enter your comments here..."
+          ></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">Submit Form</button>
+      </form>
+    </div>
+
+    <script>
+      // Phone number validation and OTP simulation
+      const phoneInput = document.getElementById("phone");
+      const sendOtpBtn = document.getElementById("sendOtp");
+      const otpInput = document.getElementById("otp");
+      const verifyOtpBtn = document.getElementById("verifyOtp");
+      const form = document.getElementById("userForm");
+      const aadharInput = document.getElementById("aadhar");
+
+      let otpValue = null;
+
+      // Phone number validation (10 digits)
+      phoneInput.addEventListener("input", function () {
+        this.value = this.value.replace(/[^0-9]/g, "");
+        if (this.value.length === 10) {
+          sendOtpBtn.disabled = false;
+          this.classList.remove("error");
+          this.classList.add("success");
+        } else {
+          sendOtpBtn.disabled = true;
+          this.classList.remove("success");
+        }
+      });
+
+      // Aadhaar validation (12 digits)
+      aadharInput.addEventListener("input", function () {
+        this.value = this.value.replace(/[^0-9]/g, "");
+        if (this.value.length === 12) {
+          this.classList.add("success");
+        } else {
+          this.classList.remove("success");
+        }
+      });
+
+      // Send OTP (simulation)
+      sendOtpBtn.addEventListener("click", function () {
+        const phone = phoneInput.value;
+        if (phone.length === 10) {
+          // Generate random 6-digit OTP (in real app, send SMS via API)
+          otpValue = Math.floor(100000 + Math.random() * 900000);
+          alert(
+            `OTP sent to ${phone}: ${otpValue}\n(OTP shown here for demo - implement SMS API in production)`
+          );
+          otpInput.focus();
+        }
+      });
+
+      // Verify OTP
+      verifyOtpBtn.addEventListener("click", function () {
+        if (otpInput.value == otpValue) {
+          alert("OTP verified successfully!");
+          otpInput.classList.add("success");
+        } else {
+          alert("Invalid OTP. Please try again.");
+          otpInput.classList.add("error");
+          otpInput.focus();
+        }
+      });
+
+      // File upload name display
+      function updateFileName(input) {
+        const fileNameDiv = document.getElementById("fileName");
+        if (input.files.length > 0) {
+          const fileName = input.files[0].name;
+          fileNameDiv.textContent = `Selected: ${fileName}`;
+        } else {
+          fileNameDiv.textContent = "";
+        }
+      }
+
+      // Form submission
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        // Basic validation
+        if (!otpValue || otpInput.value != otpValue) {
+          alert("Please verify OTP first");
+          return;
+        }
+
+        const formData = new FormData(form);
+        console.log("Form submitted:", Object.fromEntries(formData));
+        alert("Form submitted successfully! Check console for data.");
+
+        // In production, send to server via fetch/AJAX
+        // fetch('/submit-form', { method: 'POST', body: formData });
+      });
+
+      // Set today's date as default
+      document.getElementById("date").valueAsDate = new Date();
+    </script>
+  </body>
+</html>
